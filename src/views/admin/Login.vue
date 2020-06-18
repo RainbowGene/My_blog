@@ -90,7 +90,7 @@ export default {
 <style lang='scss'>
 .login_container {
   background-color: #2b4b6b;
-  min-height: 625px;
+  height: 100vh;
 }
 .login_box {
   width: 450px;

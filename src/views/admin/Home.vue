@@ -132,6 +132,7 @@ export default {
 <style lang='scss' scoped>
 .home-container {
   min-height: 700px;
+  height: 100vh;
 }
 .el-header {
   background-color: #373d41;
