@@ -81,16 +81,17 @@
 </template>
 
 <script>
-import TinymceEditor from '@/components/common/Tinymce'
+import TinymceEditor from "@/components/common/Tinymce";
 export default {
-  data () {
+  data() {
     return {
       isShow: true,
       aid: null,
       disabled: false,
       formData: {
-        id: sessionStorage.getItem('id'),
-        username: sessionStorage.getItem('username'),
+        aid: null,
+        id: sessionStorage.getItem("id"),
+        username: sessionStorage.getItem("username"),
         title: null,
         cover: null, // 封面地址
         content: null,
@@ -100,129 +101,131 @@ export default {
       // 添加表单的验证规则对象
       addFormRules: {
         title: [
-          { required: true, message: '请填写标题', trigger: 'blur' },
+          { required: true, message: "请填写标题", trigger: "blur" },
           {
             max: 50,
-            message: '标题不能超过50个字符',
-            trigger: 'blur'
+            message: "标题不能超过50个字符",
+            trigger: "blur"
           }
         ],
-        content: [{ required: true, message: '请填写内容', trigger: 'blur' }]
+        content: [{ required: true, message: "请填写内容", trigger: "blur" }]
       },
       fileList: [],
       typeList: []
-    }
+    };
   },
   components: {
     TinymceEditor
   },
-  mounted () {
-    this.getArttype()
+  mounted() {
+    this.getArttype();
     if (this.$route.query.aid) {
       // 有文章id传入，为编辑文章
-      this.isShow = false
-      this.editPage(this.$route.query.aid)
+      this.isShow = false;
+      this.formData.aid = this.$route.query.aid;
+      this.editPage(this.$route.query.aid);
     }
   },
   methods: {
     // 编辑时的数据填充
-    async editPage (aid) {
-      const { data, status } = await this.$api.admin.getArtOne({ aid })
+    async editPage(aid) {
+      const { data, status } = await this.$api.admin.getArtOne({ aid });
       if (status === 200 && data) {
         // 填充页面数据
-        this.formData.id = data.author._id
-        this.formData.title = data.title
-        this.formData.content = data.content
-        this.formData.label = data.label
-        this.aid = aid
+        this.formData.id = data.author._id;
+        this.formData.title = data.title;
+        this.formData.content = data.content;
+        this.formData.label = data.label;
+        this.aid = aid;
         // 图片上传控件填充
-        this.formData.cover = data.cover
-        const cname = data.cover.split('cover_img/')[1]
-        const coverItem = { name: cname, url: data.cover }
-        this.fileList.push(coverItem)
+        this.formData.cover = data.cover;
+        const cname = data.cover.split("cover_img/")[1];
+        const coverItem = { name: cname, url: data.cover };
+        this.fileList.push(coverItem);
         // 下拉框处理
-        this.formData.typeval = data.type._id
+        this.formData.typeval = data.type._id;
       }
     },
-    async getArttype () {
-      const { data } = await this.$api.admin.getArttype({ all: 'all' })
-      if (data) return (this.typeList = data.records)
-      return this.$message.info('类别选择器加载失败')
+    async getArttype() {
+      const { data } = await this.$api.admin.getArttype({ all: "all" });
+      if (data) return (this.typeList = data.records);
+      return this.$message.info("类别选择器加载失败");
     },
-    handleRemove (file, fileList) {
-      this.fileList = []
+    handleRemove(file, fileList) {
+      this.fileList = [];
       // console.log(file, fileList);
     },
-    handlePreview (file) {
-      console.log(file)
+    handlePreview(file) {
+      console.log(file);
     },
-    handleExceed (files, fileList) {
+    handleExceed(files, fileList) {
       this.$message.warning(
         `当前限制选择 1 个文件，本次选择了 ${
           files.length
         } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      )
+      );
     },
     // 文件移除
-    beforeRemove (file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
     // 上传成功
-    handleSuccess (res) {
+    handleSuccess(res) {
       if (res.status === 200) {
-        const coverItem = { name: res.name, url: res.url }
-        this.formData.cover = coverItem.url
-        this.fileList.push(coverItem)
+        const coverItem = { name: res.name, url: res.url };
+        this.formData.cover = coverItem.url;
+        this.fileList.push(coverItem);
       } else {
-        this.$message.error('上传失败！')
+        this.$message.error("上传失败！");
       }
     },
     // 发布文章
-    createArticle () {
+    createArticle() {
       // console.log(this.formData);
       this.$refs.addFormRef.validate(valid => {
         // 预验证
-        if (!valid) return
-        if (!this.formData.typeval) return this.$message.info('请选择类别')
+        if (!valid) return;
+        if (!this.formData.typeval) return this.$message.info("请选择类别");
         this.$api.admin
           .addArticle(this.formData)
           .then(res => {
             if (res.status === 200) {
-              this.$message.success('添加成功')
-              this.$router.push('/article')
+              this.$message.success("添加成功");
+              this.$router.push("/article");
             }
           })
           .catch(err => {
-            return this.$message.info('添加失败')
-          })
-      })
+            return this.$message.info("添加失败");
+          });
+      });
     },
-    editArticle () {
+    editArticle() {
       // 文章修改
-      console.log(this.formData)
+      console.log(this.formData);
       this.$refs.addFormRef.validate(valid => {
         // 预验证
-        if (!valid) return
-        if (!this.formData.typeval) return this.$message.info('请选择类别')
+        if (!valid) return;
+        if (!this.formData.typeval) return this.$message.info("请选择类别");
         this.$api.admin
           .editArticle(this.formData)
           .then(res => {
+            console.log(res.msg);
             if (res.status === 200) {
-              this.$message.success('修改成功')
-              this.$router.push('/article')
+              this.$message.success("修改成功");
+              this.$router.push("/article");
             }
           })
           .catch(err => {
-            return this.$message.info('修改失败')
-          })
-      })
+            return this.$message.info("修改失败");
+          });
+      });
     },
     // cencel
-    cencel () {
-      this.$router.push('/article')
+    cencel() {
+      this.$router.push("/article");
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 </style>

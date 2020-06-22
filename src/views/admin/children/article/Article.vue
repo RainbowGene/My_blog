@@ -72,9 +72,9 @@
 </template>
 
 <script>
-import { dateFormat } from '@/plugins/dateFormat'
+import { dateFormat } from "@/plugins/dateFormat";
 export default {
-  data () {
+  data() {
     return {
       queryInfo: {
         query: null,
@@ -83,71 +83,71 @@ export default {
       },
       articleList: [],
       total: null
-    }
+    };
   },
-  mounted () {
-    this.getArticleList()
+  mounted() {
+    this.getArticleList();
   },
   methods: {
-    async getArticleList () {
-      const res = await this.$api.admin.getArticleList(this.queryInfo)
+    async getArticleList() {
+      const res = await this.$api.admin.getArticleList(this.queryInfo);
       // console.log(res);
       if (res.status === 200) {
-        this.articleList = res.data.records
-        this.total = res.data.total
+        this.articleList = res.data.records;
+        this.total = res.data.total;
       } else {
-        return this.$message.info('文章列表加载失败!')
+        return this.$message.info("文章列表加载失败!");
       }
     },
-    addArticle () {
-      this.$router.push('/article-add')
+    addArticle() {
+      this.$router.push("/article-add");
     },
     // 修改文章
-    editArt (item) {
+    editArt(item) {
       // 使用路由传值？ 传入文章id
       // console.log(item._id);
-      this.$router.push(`/article-add?aid=${item._id}`)
+      this.$router.push(`/article-add?aid=${item._id}`);
     },
     // artStatusChanged(item) { // 文章状态发生改变 },
     // 删除文章
-    async deleteArt (item) {
-      const id = item._id
+    async deleteArt(item) {
+      const id = item._id;
       const confirmResult = await this.$confirm(
-        '删除文章《' + item.title + '》？',
-        '删除',
+        "删除文章《" + item.title + "》？",
+        "删除",
         {
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning"
         }
-      ).catch(err => err)
-      if (confirmResult == 'cancel') return this.$message.info('操作取消')
-      const { status } = await this.$api.admin.delArticle({ id })
+      ).catch(err => err);
+      if (confirmResult == "cancel") return this.$message.info("操作取消");
+      const { status } = await this.$api.admin.delArticle({ id });
       if (status === 200) {
-        this.getArticleList()
-        return this.$message.success('删除成功')
+        this.getArticleList();
+        return this.$message.success("删除成功");
       }
-      return this.$message.info('操作失败')
+      return this.$message.info("操作失败");
     },
     // 监听pagesize改变的事件
-    handleSizeChange (newSize) {
-      this.queryInfo.pagesize = newSize
-      this.getArticleList()
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize;
+      this.getArticleList();
     },
     // 监听 页码值 改变的事件
-    handleCurrentChange (newPage) {
-      this.queryInfo.page = newPage
-      this.getArticleList()
+    handleCurrentChange(newPage) {
+      this.queryInfo.page = newPage;
+      this.getArticleList();
     }
   },
   filters: {
     // 格式化时间过滤器
-    formatDate (time) {
-      var date = new Date(time) // 这里time要乘以1000
-      return dateFormat(date, 'yyyy-MM-dd hh:mm')
+    formatDate(time) {
+      var date = new Date(time); // 这里time要乘以1000
+      return dateFormat(date, "yyyy-MM-dd hh:mm");
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 </style>

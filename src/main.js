@@ -14,6 +14,7 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import api from './api/api'
 
+Vue.prototype.$bus = new Vue()
 Vue.prototype.$api = api
 
 Vue.config.productionTip = false

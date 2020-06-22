@@ -7,6 +7,12 @@ Vue.use(VueRouter)
 const Home = () => import('@/views/home/Home')
 const HomeLogin = () => import('@/views/home/Login')
 const HomeRegisrer = () => import('@/views/home/Register')
+const HomeIndex = () => import('@/views/home/children/index/HomeContent')
+const HomeArticle = () => import('@/views/home/children/article/Article')
+const HomeArticleDetail = () => import('@/views/home/children/article/ArticleDetail')
+const HomeAlbum = () => import('@/views/home/children/album/Album')
+const HomeAbout = () => import('@/views/home/children/about/About')
+const HomeContact = () => import('@/views/home/children/contact/Contact')
 
 // 后台
 const AdminLogin = () => import('@/views/admin/Login')
@@ -26,7 +32,16 @@ const routes = [
   // { path: '/', redirect: '/adminLogin' },
   { path: '/', redirect: '/home' },
   // 前台展示路由
-  { path: '/home', component: Home },
+  {
+    path: '/home', component: Home, redirect: '/index', children: [
+      { path: '/index', component: HomeIndex },
+      { path: '/arts', component: HomeArticle }, 
+      { path: '/art/:aid', component: HomeArticleDetail },
+      { path: '/album', component: HomeAlbum },
+      { path: '/about', component: HomeAbout },
+      { path: '/contact', component: HomeContact }
+    ]
+  },
   { path: '/login', component: HomeLogin },
   { path: '/register', component: HomeRegisrer },
   // 后台管理路由

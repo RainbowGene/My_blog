@@ -36,11 +36,9 @@
                     :class="navname===item.title? 'nav-link active':'nav-link'"
                     v-for="(item,index) in navlist"
                     :key="index"
-                    @click="navClick(item.title)"
+                    @click="navClick(item)"
                   >
-                    <a class="nav-link" :href="item.path">
-                      {{item.title}}
-                    </a>
+                    <a class="nav-link">{{item.title}}</a>
                   </li>
                 </ul>
               </div>
@@ -54,30 +52,45 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       onMenubtn: false, // 菜单按钮是否点击
       navlist: [
-        { path: '/home', title: 'Home' },
-        { path: '#', title: 'Features' },
-        { path: '#', title: 'Categories' },
-        { path: '#', title: 'Archive' },
-        { path: '#', title: 'About' },
-        { path: '#', title: 'Contact' }
+        { path: "/index", title: "Home" },
+        { path: "/arts", title: "Article" },
+        { path: "/album", title: "Album" },
+        { path: "/about", title: "About" },
+        { path: "/contact", title: "Contact" }
       ],
-      navname: 'Home' // 默认选中
-    }
+      navname: "Home" // 默认选中
+    };
   },
-  components: {},
+  created() {
+    this.$bus.$on("headerBar", this.updateBar);
+  },
+  beforeDestroy() {
+    this.$bus.$off("headerBar", this.updateBar);
+  },
   methods: {
-    navClick (name) {
-      this.navname = name
+    navClick(item) {
+      if (this.navname !== item.title) {
+        this.navname = item.title;
+        this.$router.push(item.path);
+      }
+    },
+    updateBar(val) {
+      this.navname = val;
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 a {
   text-decoration: none;
+}
+.navbar-nav {
+  li {
+    cursor: pointer;
+  }
 }
 </style>

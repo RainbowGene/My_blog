@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
       { title: { $regex: reg } },
       { content: { $regex: reg } }
     ]
-  }).populate('author').populate('type').page(page).size(pagesize).display(5).exec()
+  }).populate('author').populate('type').sort('-publishDate').page(page).size(pagesize).display(5).exec()
   if (arts) return res.send({ data: arts, status: 200 })
   return res.send({ status: 201, msg: '查询失败！' })
 }
